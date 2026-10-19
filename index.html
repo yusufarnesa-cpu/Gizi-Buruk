@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Medical Study Companion | Blok Endokrin - Malnutrisi Energi-Protein / Gizi Buruk (Kemenkes & IDAI)</title>
+    <!-- Google Fonts & Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 smooth-scroll transition-colors duration-300">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="bg-medical-600 text-white p-2 rounded-xl font-bold text-lg shadow-md">🩺</span>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-slate-900 dark:text-white">MED-COMPANION <span class="text-medical-600">ENDOCRINE</span></h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Blok Endokrin & Metabolik - Malnutrisi Energi-Protein / Gizi Buruk (Kemenkes & IDAI)</p>
+                </div>
+            </div>
+
+            <!-- Search Bar & Progress -->
+            <div class="flex items-center space-x-4 flex-1 max-w-md mx-auto">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Cari materi, definisi, marasmus, kwashiorkor, F-75, F-100, RUTF, tatalaksana..." class="w-full pl-10 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-700/50 border border-transparent dark:border-slate-600 rounded-lg focus:outline-none focus:border-medical-500 dark:text-white placeholder-slate-400">
+                </div>
+            </div>
+
+            <!-- Controls (Theme & Progress Indicator) -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden md:block text-xs font-medium text-slate-600 dark:text-slate-300">
+                    Progress: <span id="progressText" class="font-bold text-medical-600">0%</span>
+                </div>
+                <button onclick="toggleDarkMode()" id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">
+                    Mode
+                </button>
+            </div>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-1">
+            <div id="progressBar" class="bg-medical-600 h-1 w-0 transition-all duration-300"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="hidden lg:block lg:col-span-1 space-y-6">
+            <div class="sticky top-24 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Daftar Isi Materi</h3>
+                <nav class="space-y-1 text-sm">
+                    <a href="#overview" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">1. Definisi & SKDI Mapping</a>
+                    <a href="#etiology" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">2. Etiologi & Patofisiologi</a>
+                    <a href="#manifestations" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">3. Manifestasi Klinik (Marasmus vs Kwashiorkor)</a>
+                    <a href="#diagnosis" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">4. Diagnosis & Klasifikasi Gizi Buruk</a>
+                    <a href="#management-inap" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">5. Tatalaksana Rawat Inap (10 Langkah & 3 Fase)</a>
+                    <a href="#management-jalan" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">6. Tatalaksana Rawat Jalan (F-100 & RUTF)</a>
+                    <a href="#complications" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">7. Komplikasi & Prognosis Jangka Panjang</a>
+                    <a href="#quiz-section" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">8. Latihan 10 Soal Ujian</a>
+                    <a href="#quick-review" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">9. Quick Review (5 Menit)</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="lg:col-span-3 space-y-8 searchable-content">
+
+            <!-- 1. DEFINISI & SKDI MAPPING -->
+            <section id="overview" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="bg-medical-100 text-medical-800 dark:bg-medical-900/50 dark:text-medical-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Topik Pediatrik Endokrin & Metabolik</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-2">Malnutrisi Energi-Protein (MEP) / Gizi Buruk pada Balita</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Dosen Pengampu: Restu Triwulandani Tolibin, M.Sc., Sp.A | Fakultas Kedokteran UMS</p>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-xl text-right">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 block">Status SKDI 2026</span>
+                        <span class="text-sm font-bold text-medical-600">🎯 TINGKAT KOMPETENSI 4A (TUNTAS)</span>
+                    </div>
+                </div>
+
+                <!-- Learning Objectives Checklist -->
+                <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm mb-3">Target Pembelajaran (Checklist Belajar):</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Memahami definisi klinis dan kriteria diagnosis gizi buruk (Kemenkes/WHO)</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Membedakan gambaran klinis Marasmus, Kwashiorkor, dan Marasmik-Kwashiorkor</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Menguasai 10 langkah tatalaksana rawat inap berdasarkan 3 fase klinis</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Menghitung kebutuhan formula khusus (F-75, F-100, ReSoMal, RUTF)</span></label>
+                    </div>
+                </div>
+
+                <!-- Definisi Core Theory -->
+                <div class="space-y-4">
+                    <div class="border-l-4 border-medical-500 bg-medical-50/50 dark:bg-slate-700/20 p-5 rounded-r-xl space-y-2">
+                        <h4 class="font-bold text-medical-800 dark:text-medical-400">1. Definisi & Epidemiologi</h4>
+                        <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            Kekurangan gizi adalah suatu kondisi yang dapat terjadi secara akut dan kronis disebabkan oleh masukan zat gizi yang tidak memadai, gangguan penyerapan, dan/atau metabolisme zat gizi akibat penyakit. Gizi buruk pada balita merupakan masalah kesehatan masyarakat utama di Indonesia yang berkaitan erat dengan kejadian stunting, infeksi berulang, serta peningkatan morbiditas dan mortalitas anak.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ETIOLOGI & PATOFISIOLOGI -->
+            <section id="etiology" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Etiology & Pathophysiology</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Etiologi, Faktor Risiko & Patomekanisme</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🌱 Faktor Penyebab (Kerangka Konseptual)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Penyebab Langsung:</b> Asupan gizi yang tidak memadai dan adanya penyakit infeksi (diare, ISPA, TBC).</li>
+                            <li><b>Penyebab Tidak Langsung:</b> Ketersediaan pangan rumah tangga tidak memadai, pola asuh anak yang salah, serta pelayanan kesehatan dan kesehatan lingkungan yang buruk.</li>
+                            <li><b>Penyebab Dasar:</b> Kemiskinan, tingkat pendidikan rendah, serta kondisi ekonomi, sosial, dan politik.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">⚡ Patomekanisme Adaptasi Selular</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Defisit Kalori & Protein:</b> Tubuh mengalami kekurangan energi total (marasmus) atau defisiensi protein dominan dengan kecukupan kalori relatif (kwashiorkor).</li>
+                            <li><b>Penurunan Fungsi Organ:</b> Terjadi atrofi otot rangka, penurunan filtrasi glomerulus ginjal, penurunan sekresi enzim pencernaan pankreas, dan penurunan sintesis protein hepar (menyebabkan hipoalbuminemia & edema).</li>
+                            <li><b>Gangguan Elektrolit:</b> Penurunan pompa Na+-K+ ATPase selular menyebabkan natrium masuk ke dalam sel dan kalium keluar, memicu retensi cairan dan edema anasarka.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MANIFESTASI KLINIK -->
+            <section id="manifestations" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Clinical Manifestations</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Manifestasi Klinik: Marasmus vs Kwashiorkor</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🔴 Marasmus</h5>
+                        <p class="text-xs">Defisiensi seluruh makronutrien (energi & protein). Tampak sangat kurus (tulang terbungkus kulit), wajah seperti orang tua (<i>old man facies</i>), cengeng/rewel, iga gambang, perut cekung, jaringan lemak subkutis sangat sedikit hingga habis (<i>baggy pants</i>), tanpa edema.</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🟠 Kwashiorkor</h5>
+                        <p class="text-xs">Defisiensi protein dominan. Wajah membulat dan sembab (<i>moon face</i>), edema bilateral berpiting pada punggung kaki/seluruh tubuh, apatis/rewel, rambut tipis kemerahan seperti rambut jagung mudah dicabut tanpa rasa sakit, kelainan kulit (dermatosis/cacar air), pembesaran hati (fatty liver).</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🟡 Marasmik-Kwashiorkor</h5>
+                        <p class="text-xs">Campuran gejala klinik keduanya: anak tampak sangat kurus (BB/TB &lt; -3 SD) namun disertai dengan adanya edema bilateral yang tidak terlalu mencolok pada kedua punggung kaki.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. DIAGNOSIS & KLASIFIKASI GIZI BURUK -->
+            <section id="diagnosis" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Diagnosis & Classification</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Kriteria Diagnosis & Klasifikasi Rawat Inap vs Rawat Jalan</h3>
+                </div>
+
+                <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400 text-base">📋 Kriteria Diagnosis Gizi Buruk (Usia 6-59 Bulan)</h4>
+                        <p class="text-xs">Dipenuhi jika ditemukan <b>minimal 1 tanda</b> berikut:</p>
+                        <ul class="list-disc pl-4 text-xs space-y-1.5">
+                            <li>Skor Z Berat Badan menurut Panjang Badan (BB/PB) atau Berat Badan menurut Tinggi Badan (BB/TB) &lt; -3 SD</li>
+                            <li>Lingkar Lengan Atas (LiLA) &lt; 11,5 cm</li>
+                            <li>Adanya edema bilateral bersifat pitting (derajat +1 hingga +3)</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+                            <span class="font-bold text-medical-700 dark:text-medical-400 block text-sm">🏥 Gizi Buruk dengan Komplikasi (Rawat Inap)</span>
+                            <p>Kriteria gizi buruk ditambah minimal 1 komplikasi medis:</p>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li>Anoreksia (tidak ada nafsu makan)</li>
+                                │<li>Dehidrasi berat (muntah terus-menerus, diare)</li>
+                                <li>Letargi / penurunan kesadaran</li>
+                                <li>Demam tinggi atau hipotermia</li>
+                                <li>Pneumonia berat (sulit bernapas/napas cepat)</li>
+                                <li>Anemia berat atau bayi usia &lt; 6 bulan / BB &lt; 4 kg</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+                            <span class="font-bold text-medical-700 dark:text-medical-400 block text-sm">🏡 Gizi Buruk Tanpa Komplikasi (Rawat Jalan)</span>
+                            <p>Kriteria gizi buruk (LiLA &lt; 11,5 cm, BB/PB &lt; -3 SD, atau edema ringan derajat +1 / +2) <b>DAN TANPA komplikasi medis</b> serta nafsu makan baik.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. TATALAKSANA RAWAT INAP -->
+            <section id="management-inap" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Inpatient Management</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">10 Langkah Tatalaksana Rawat Inap Gizi Buruk (3 Fase Klinis)</h3>
+                </div>
+
+                <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <span class="font-bold text-medical-700 dark:text-medical-400 text-sm">1️⃣ Fase Stabilisasi (Hari 1-7)</span>
+                            <p>Fokus mengatasi kegawatdaruratan dan komplikasi:</p>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li>Cegah & atasi hipoglikemia (glukosa 10% / F-75 tiap 2 jam)</li>
+                                <li>Cegah & atasi hipotermia (penghangat, metode kanguru)</li>
+                                <li>Atasi dehidrasi dengan ReSoMal (bukan oralit biasa)</li>
+                                <li>Koreksi gangguan elektrolit (Mineral Mix)</li>
+                                <li>Obati infeksi rutin (antibiotik spektrum luas)</li>
+                                <li>Kandungan F-75: Energi 75 kkal/100 ml, protein rendah.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <span class="font-bold text-medical-700 dark:text-medical-400 text-sm">2️⃣ Fase Transisi (Minggu 2)</span>
+                            <p>Transisi bertahap menuju tumbuh kejar:</p>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li>Dimulai saat komplikasi teratasi, nafsu makan pulih, edema berkurang.</li>
+                                <li>F-75 diganti bertahap dengan F-100 atau RUTF dalam volume sama selama 2 hari, lalu dinaikkan.</li>
+                                <li>Kebutuhan energi: 100-150 kkal/kgBB/hari, protein: 2-3 g/kgBB/hari.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <span class="font-bold text-medical-700 dark:text-medical-400 text-sm">3️⃣ Fase Rehabilitasi (Minggu 3-6)</span>
+                            <p>Fokus pertumbuhan kejar (catch-up growth):</p>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li>Energi: 150-220 kkal/kgBB/hari, protein: 4-6 g/kgBB/hari.</li>
+                                <li>Pemberian zat besi (Fe) dimulai pada fase ini (setelah BB naik, agar tidak memicu infeksi).</li>
+                                <li>Stimulasi tumbuh kembang & persiapan pulang.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. TATALAKSANA RAWAT JALAN -->
+            <section id="management-jalan" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Outpatient Management</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Tatalaksana Rawat Jalan: F-100, RUTF, & Suplementasi</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🥛 Formula F-100 & RUTF</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Formula F-100:</b> Mengandung 100 kkal setiap 100 ml (terbuat dari susu, gula, minyak, dan mineral mix). Diberikan tiap 4 jam (6 kali sehari) pada rawat jalan atau pasca rawat inap.</li>
+                            <li><b>RUTF (Ready-to-Use Therapeutic Food):</b> Makanan terapi siap santap berbasis kacang tanah atau ikan. 1 sachet (92 gram) mengandung 500 kkal. Sangat disukai anak karena praktis dan lezat.</li>
+                            <li><b>Target Kenaikan BB:</b> Minimal 5 g/kgBB/hari atau 50 g/kgBB/minggu.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">💊 Medikamentosa & Suplementasi Rutin</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Antibiotik:</b> Amoksisilin oral (15 mg/kg tiap 8 jam) selama 5 hari saat pertama masuk rawat jalan.</li>
+                            <li><b>Vitamin A:</b> Dosis tunggal pada hari ke-1 sesuai usia (Kapsul Biru 100.000 IU untuk 6-11 bulan; Kapsul Merah 200.000 IU untuk 12-59 bulan).</li>
+                            <li><b>Zat Besi & Asam Folat:</b> Asam folat 5 mg hari pertama dilanjutkan 1 mg/hari; zat besi diberikan setelah BB mulai naik.</li>
+                            <li><b>Kriteria Sembuh:</b> LiLA ≥ 12,5 cm (warna hijau) dan/atau Skor-Z BB/PB ≥ -2 SD selama 2 minggu berturut-turut tanpa edema.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. KOMPLIKASI & PROGNOSIS -->
+            <section id="complications" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Complications & Prognosis</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Dampak & Prognosis Jangka Panjang Gizi Buruk</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🧠 Dampak Jangka Pendek</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li>Peningkatan risiko mortalitas, morbiditas berat, dan disabilitas akibat infeksi berulang.</li>
+                            <li>Gangguan perkembangan otak dan fungsi kognitif anak.</li>
+                            <li>Penurunan kapasitas kerja dan sistem imun tubuh.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">⚠️ Dampak Jangka Panjang (Fetal Programming)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li>Penurunan ukuran tubuh di usia dewasa dan penurunan produktivitas ekonomi.</li>
+                            <li>Risiko tinggi menderita penyakit metabolik saat dewasa (Diabetes Melitus Tipe 2, Obesitas sentral, Hipertensi, dan Penyakit Kardiovaskular).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. INTERACTIVE QUIZ (10 SOAL) -->
+            <section id="quiz-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Exam Simulation</span>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Latihan 10 Soal Ujian Komprehensif Malnutrisi Energi-Protein (Gizi Buruk)</h3>
+                    </div>
+                    <span id="quizScore" class="bg-medical-100 text-medical-800 dark:bg-medical-900 dark:text-medical-200 px-3 py-1 rounded-lg text-xs font-bold">Skor Total: 0 / 10</span>
+                </div>
+
+                <!-- SOAL 1 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q1">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>1.</b> Manakah parameter antropometri utama yang digunakan untuk menegakkan diagnosis gizi buruk pada balita usia 6-59 bulan di layanan kesehatan?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="A" class="mr-2"> A. Lingkar kepala menurut umur di bawah persentil 3</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="B" class="mr-2"> B. Lingkar Lengan Atas (LiLA) di bawah 11,5 cm atau Skor-Z BB/PB &lt; -3 SD</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="C" class="mr-2"> C. Indeks Massa Tubuh menurut Umur (IMT/U) di atas persentil 95</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="D" class="mr-2"> D. Berat Badan menurut Umur (BB/U) antara -2 SD hingga -3 SD</label>
+                    </div>
+                    <button onclick="checkSingle(1, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-1" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 2 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q2">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>2.</b> Apakah temuan klinis khas yang membedakan sindrom Kwashiorkor dibandingkan dengan Marasmus pada anak dengan gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="A" class="mr-2"> A. Adanya edema bilateral berpiting dan rambut tipis kemerahan mudah dicabut</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="B" class="mr-2"> B. Penurunan berat badan ekstrem tanpa lemak subkutis sama sekali</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="C" class="mr-2"> C. Perawakan sangat tinggi dengan pembesaran kelenjar tiroid</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="D" class="mr-2"> D. Peningkatan nafsu makan yang berlebihan disertai obesitas sentral</label>
+                    </div>
+                    <button onclick="checkSingle(2, 'A')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-2" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 3 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q3">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>3.</b> Berapakah kandungan energi setiap 100 ml formula F-75 yang digunakan pada tahap awal tatalaksana rawat inap gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="A" class="mr-2"> A. 50 kkal setiap 100 ml</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="B" class="mr-2"> B. 75 kkal setiap 100 ml</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="C" class="mr-2"> C. 100 kkal setiap 100 ml</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="D" class="mr-2"> D. 150 kkal setiap 100 ml</label>
+                    </div>
+                    <button onclick="checkSingle(3, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-3" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 4 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q4">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>4.</b> Mengapa cairan ReSoMal (Rehydration Solution for Malnutrition) lebih dipilih daripada oralit biasa untuk mengatasi dehidrasi pada anak gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="A" class="mr-2"> A. ReSoMal memiliki kandungan natrium jauh lebih tinggi dan kalium rendah</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="B" class="mr-2"> B. ReSoMal memiliki kandungan natrium lebih rendah serta tinggi kalium dan magnesium</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="C" class="mr-2"> C. ReSoMal mengandung antibiotik spektrum luas untuk membunuh bakteri usus</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="D" class="mr-2"> D. ReSoMal tidak memerlukan penambahan air matang saat penyajian</label>
+                    </div>
+                    <button onclick="checkSingle(4, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-4" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 5 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q5">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>5.</b> Kapan waktu pemberian suplemen zat besi (Fe) yang paling tepat pada tatalaksana anak dengan gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="A" class="mr-2"> A. Diberikan sejak hari pertama masuk rawat inap pada fase stabilisasi</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="B" class="mr-2"> B. Diberikan setelah berat badan anak mulai mengalami kenaikan (fase rehabilitasi)</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="C" class="mr-2"> C. Diberikan hanya apabila anak mengalami demam tinggi</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="D" class="mr-2"> D. Tidak boleh diberikan sama sekali selama masa anak balita</label>
+                    </div>
+                    <button onclick="checkSingle(5, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-5" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 6 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q6">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>6.</b> Berapakah kandungan energi dalam 1 sachet produk RUTF (Ready-to-Use Therapeutic Food) berat 92 gram untuk tatalaksana gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="A" class="mr-2"> A. 100 kkal per sachet</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="B" class="mr-2"> B. 250 kkal per sachet</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="C" class="mr-2"> C. 500 kkal per sachet</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="D" class="mr-2"> D. 1000 kkal per sachet</label>
+                    </div>
+                    <button onclick="checkSingle(6, 'C')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-6" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 7 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q7">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>7.</b> Manakah kriteria klinis dan antropometri yang menyatakan bahwa seorang anak balita gizi buruk telah dinyatakan sembuh dari layanan rawat jalan?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="A" class="mr-2"> A. LiLA &ge; 12,5 cm (hijau) dan/atau Skor-Z BB/PB &ge; -2 SD tanpa edema selama 2 minggu berturut-turut</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="B" class="mr-2"> B. Berat badan anak sudah mencapai angka persis rata-rata anak normal seusianya</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="C" class="mr-2"> C. Anak sudah mampu berjalan sendiri tanpa bantuan orang tua di puskesmas</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="D" class="mr-2"> D. Nafsu makan anak meningkat dan menghabiskan 1 porsi makanan dewasa</label>
+                    </div>
+                    <button onclick="checkSingle(7, 'A')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-7" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 8 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q8">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>8.</b> Mengapa pemberian antibiotik spektrum luas wajib diberikan pada semua anak gizi buruk saat pertama kali datang walaupun belum ada tanda klinis infeksi yang jelas?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="A" class="mr-2"> A. Untuk mempercepat proses pencernaan karbohidrat di usus halus</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="B" class="mr-2"> B. Karena hampir semua anak gizi buruk mengalami infeksi tersembunyi akibat penurunan sistem imun</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="C" class="mr-2"> C. Sebagai suplemen penambah nafsu makan dan penumbuh jaringan otot</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="D" class="mr-2"> D. Mencegah terjadinya reaksi alergi terhadap formula susu F-75</label>
+                    </div>
+                    <button onclick="checkSingle(8, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-8" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 9 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q9">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>9.</b> Manakah komplikasi jangka panjang (fetal/early life programming) yang dikaitkan dengan riwayat gizi buruk pada masa balita saat individu tersebut mencapai usia dewasa?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="A" class="mr-2"> A. Risiko tinggi menderita penyakit metabolik seperti diabetes melitus dan hipertensi</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="B" class="mr-2"> B. Penurunan berat badan permanen tanpa batas di usia tua</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="C" class="mr-2"> C. Peningkatan kepadatan tulang dan otot secara berlebihan</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="D" class="mr-2"> D. Kekebalan tubuh mutlak terhadap seluruh jenis penyakit infeksi virus</label>
+                    </div>
+                    <button onclick="checkSingle(9, 'A')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-9" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 10 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q10">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>10.</b> Kapan waktu peralihan (transisi) dari formula F-75 ke F-100 atau RUTF dapat mulai dilakukan pada tatalaksana rawat inap gizi buruk?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="A" class="mr-2"> A. Saat anak baru pertama kali tiba di instalasi gawat darurat</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="B" class="mr-2"> B. Ketika komplikasi medis teratasi, nafsu makan pulih, dan edema mulai berkurang</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="C" class="mr-2"> C. Setelah anak menjalani perawatan tepat genap 30 hari di rumah sakit</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="D" class="mr-2"> D. Ketika suhu tubuh anak sudah mencapai angka di atas 38 derajat Celsius</label>
+                    </div>
+                    <button onclick="checkSingle(10, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-10" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+            </section>
+
+            <!-- 9. QUICK REVIEW -->
+            <section id="quick-review" class="bg-gradient-to-br from-medical-600 to-medical-800 text-white p-6 md:p-8 rounded-2xl shadow-lg space-y-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">If You Only Have 5 Minutes (Quick Review)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Kriteria Gizi Buruk</span>
+                        <p>LiLA &lt; 11.5 cm, BB/PB &lt; -3 SD, atau adanya edema bilateral berpiting.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Marasmus vs Kwashiorkor</span>
+                        <p>Marasmus: sangat kurus, tanpa edema. Kwashiorkor: edema anasarka, rambut jagung, moon face.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">F-75 vs F-100 / RUTF</span>
+                        <p>F-75 untuk stabilisasi (75 kkal/100ml). F-100 & RUTF (500 kkal/sachet) untuk transisi & rehabilitasi.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Prinsip Penting (Fe & ReSoMal)</span>
+                        <p>Gunakan ReSoMal untuk dehidrasi. Zat besi (Fe) baru diberikan pada fase rehabilitasi setelah BB naik.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 py-8 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 mt-12">
+        Interactive Medical Study Companion • Blok Endokrin & Metabolik • FK UMS • Offline Ready
+    </footer>
+
+    <!-- JavaScript Interactivity -->
+    <script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeToggle.innerText = 'Mode Terang';
+            } else {
+                html.classList.add('dark');
+                themeToggle.innerText = 'Mode Gelap';
+            }
+        }
+
+        let totalScore = 0;
+        const answeredState = {};
+
+        function checkSingle(qNum, correctOpt) {
+            const radios = document.getElementsByName('q' + qNum);
+            let userVal = '';
+            for (const r of radios) {
+                if (r.checked) userVal = r.value;
+            }
+
+            const feedback = document.getElementById('feedback-' + qNum);
+            feedback.classList.remove('hidden');
+
+            if (!userVal) {
+                feedback.className = "mt-3 p-4 rounded-lg text-xs bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200";
+                feedback.innerHTML = "Silakan pilih salah satu opsi jawaban terlebih dahulu.";
+                return;
+            }
+
+            if (!answeredState[qNum]) {
+                answeredState[qNum] = true;
+                if (userVal === correctOpt) {
+                    totalScore++;
+                    feedback.className = "mt-3 p-4 rounded-lg text-xs bg-emerald-50 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200 border border-emerald-200";
+                    feedback.innerHTML = "<b>BENAR!</b><br>Jawaban Anda sudah tepat dan sesuai dengan pedoman Kemenkes dan IDAI.";
+                } else {
+                    feedback.className = "mt-3 p-4 rounded-lg text-xs bg-rose-50 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200 border border-rose-200";
+                    feedback.innerHTML = "<b>KURANG TEPAT.</b> Jawaban yang benar adalah opsi <b>" + correctOpt + "</b>.";
+                }
+                document.getElementById('quizScore').innerText = "Skor Total: " + totalScore + " / 10";
+            }
+        }
+
+        window.addEventListener('scroll', function() {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+            document.getElementById('progressText').innerText = Math.round(scrolled) + '%';
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.searchable-content > section');
+            sections.forEach(function(sec) {
+                const text = sec.innerText.toLowerCase();
+                if (text.includes(term) || term === '') {
+                    sec.style.display = '';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
